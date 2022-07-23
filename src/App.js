@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Gifs from "./components/Gifs";
 import { connect } from "react-redux";
+import { fetchStart, fetchSuccess, fetchFail } from "./actions";
+import axios from "axios";
+import { URL } from "./constants";
 
 const initialSearch = "";
-function App({ loading, error }) {
+function App({ loading, error, fetchStart, fetchSuccess, fetchFail }) {
   const [search, setSearch] = useState(initialSearch);
 
   const submitHandler = (e) => {
@@ -13,6 +16,16 @@ function App({ loading, error }) {
   const changeHandler = (e) => {
     setSearch(e.target.value);
   };
+
+  useEffect(() => {
+    fetchStart();
+    axios
+      .get(URL)
+      .then((res) => {
+        fetchSuccess(res.data.data);
+      })
+      .catch((err) => fetchFail(err.message));
+  }, []);
   return (
     <div className="App">
       <h1>Get random Gifs</h1>
@@ -37,4 +50,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {})(App);
+export default connect(mapStateToProps, { fetchStart, fetchSuccess, fetchFail })(App);
