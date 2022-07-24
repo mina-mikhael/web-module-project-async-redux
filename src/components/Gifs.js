@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 const Gifs = ({ gifData }) => {
   return (
-    <div>
+    <div className="gifs">
       {gifData.map((item) => {
         return <Gif key={item.id} item={item} />;
       })}
